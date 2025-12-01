@@ -27,7 +27,8 @@
       "Bash(git pull:*)",
       "Bash(git show:*)",
       "Bash(awk:*)",
-      "Bash(git fsck:*)"
+      "Bash(git fsck:*)",
+      "Bash(git fetch:*)"
     ],
     "deny": [],
     "ask": []

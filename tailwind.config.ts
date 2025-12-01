@@ -61,6 +61,7 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
+        karla: ['var(--font-karla)', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         'accordion-down': {

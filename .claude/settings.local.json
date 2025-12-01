@@ -28,7 +28,10 @@
       "Bash(git show:*)",
       "Bash(awk:*)",
       "Bash(git fsck:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(dir:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

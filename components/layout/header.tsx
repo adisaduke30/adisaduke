@@ -24,9 +24,10 @@ interface HeaderProps {
     role: 'admin' | 'client'
     avatar_url?: string
   }
+  notificationCenter?: React.ReactNode
 }
 
-export function Header({ user }: HeaderProps) {
+export function Header({ user, notificationCenter }: HeaderProps) {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
 
@@ -59,7 +60,8 @@ export function Header({ user }: HeaderProps) {
         </Link>
 
         {user && (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            {notificationCenter}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">

@@ -26,28 +26,74 @@ export default async function AdminDashboardPage() {
     redirect('/dashboard')
   }
 
+  // Query total clients count
+  const { count: totalClientsCount } = await supabase
+    .from('users')
+    .select('*', { count: 'exact', head: true })
+    .eq('role', 'client')
+
+  // Query active projects count
+  const { count: activeProjectsCount } = await supabase
+    .from('projects')
+    .select('*', { count: 'exact', head: true })
+    .in('status', ['pre_production', 'shooting', 'editing', 'review'])
+
+  // Query revenue this month (paid invoices)
+  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
+  const { data: paidInvoices } = await supabase
+    .from('payments')
+    .select('amount')
+    .eq('status', 'succeeded')
+    .gte('created_at', startOfMonth)
+
+  const totalRevenue = paidInvoices?.reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0
+
+  // Query pending bookings count
+  const { count: pendingBookingsCount } = await supabase
+    .from('bookings')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'pending')
+
+  // Query recent projects with client info
+  const { data: recentProjects } = await supabase
+    .from('projects')
+    .select(`
+      *,
+      users!projects_client_id_fkey(name, email, company)
+    `)
+    .order('created_at', { ascending: false })
+    .limit(5)
+
+  // Query pending bookings for approval
+  const { data: pendingBookings } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false })
+    .limit(5)
+
   const stats = [
     {
       title: 'Total Clients',
-      value: '0',
+      value: totalClientsCount?.toString() || '0',
       icon: Users,
       description: 'Active clients',
     },
     {
       title: 'Active Projects',
-      value: '0',
+      value: activeProjectsCount?.toString() || '0',
       icon: FolderKanban,
       description: 'In progress',
     },
     {
       title: 'Revenue',
-      value: '$0',
+      value: `$${(totalRevenue / 100).toLocaleString()}`,
       icon: DollarSign,
       description: 'This month',
     },
     {
       title: 'Pending Bookings',
-      value: '0',
+      value: pendingBookingsCount?.toString() || '0',
       icon: Calendar,
       description: 'Awaiting approval',
     },
@@ -92,9 +138,30 @@ export default async function AdminDashboardPage() {
               <CardDescription>Latest client projects</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center h-32 text-muted-foreground">
-                No projects yet
-              </div>
+              {!recentProjects || recentProjects.length === 0 ? (
+                <div className="flex items-center justify-center h-32 text-muted-foreground">
+                  No projects yet
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {recentProjects.map((project: any) => (
+                    <div key={project.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <FolderKanban className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">{project.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {project.users?.name || 'Unknown Client'}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground capitalize">
+                        {project.status.replace('_', ' ')}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -104,9 +171,30 @@ export default async function AdminDashboardPage() {
               <CardDescription>Booking requests waiting for review</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center h-32 text-muted-foreground">
-                No pending approvals
-              </div>
+              {!pendingBookings || pendingBookings.length === 0 ? (
+                <div className="flex items-center justify-center h-32 text-muted-foreground">
+                  No pending approvals
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {pendingBookings.map((booking) => (
+                    <div key={booking.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Calendar className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">{booking.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {booking.project_type || 'No type specified'}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(booking.desired_date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast'
 
 interface Project {
   id: string
-  title: string
+  name: string
 }
 
 interface ProjectMessageFormProps {
@@ -77,7 +77,7 @@ export function ProjectMessageForm({ projects }: ProjectMessageFormProps) {
           <SelectContent>
             {projects?.map((project) => (
               <SelectItem key={project.id} value={project.id}>
-                {project.title}
+                {project.name}
               </SelectItem>
             ))}
           </SelectContent>

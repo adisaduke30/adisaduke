@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { sendNewMessageEmail } from '@/lib/email/send'
 
 // Validation schema
 const messageSchema = z.object({
@@ -81,6 +82,35 @@ export async function sendMessage(formData: MessageFormData) {
           ? `/projects/${validatedData.project_id}`
           : `/admin/projects/${validatedData.project_id}`,
       })
+
+      // Get sender and recipient info for email
+      const { data: sender } = await supabase
+        .from('users')
+        .select('name')
+        .eq('id', user.id)
+        .single()
+
+      const { data: recipient } = await supabase
+        .from('users')
+        .select('name, email')
+        .eq('id', recipientId)
+        .single()
+
+      if (sender && recipient) {
+        // Truncate message for preview
+        const messagePreview = validatedData.body.length > 200
+          ? validatedData.body.substring(0, 200) + '...'
+          : validatedData.body
+
+        await sendNewMessageEmail(
+          recipient.email,
+          recipient.name,
+          sender.name,
+          messagePreview,
+          validatedData.project_id,
+          project.name
+        )
+      }
     }
 
     // Revalidate paths

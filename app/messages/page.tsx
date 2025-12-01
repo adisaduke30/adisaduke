@@ -30,7 +30,7 @@ export default async function MessagesPage() {
 
   const { data: projects } = await supabase
     .from('projects')
-    .select('id, title')
+    .select('id, name')
     .eq('client_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -38,7 +38,7 @@ export default async function MessagesPage() {
     .from('project_messages')
     .select(`
       *,
-      projects!inner(client_id, title)
+      projects!inner(client_id, name)
     `)
     .eq('projects.client_id', user.id)
     .order('created_at', { ascending: false })
@@ -85,7 +85,7 @@ export default async function MessagesPage() {
                         <div className="flex items-center gap-2">
                           <div className="h-px flex-1 bg-border" />
                           <p className="text-sm font-medium text-muted-foreground">
-                            {project?.title || 'Unknown Project'}
+                            {project?.name || 'Unknown Project'}
                           </p>
                           <div className="h-px flex-1 bg-border" />
                         </div>

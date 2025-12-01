@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardLayout } from '@/components/layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -13,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { FolderKanban, Search, Calendar, DollarSign, Plus, ArrowRight } from 'lucide-react'
+import { ProjectForm } from '@/components/admin/ProjectForm'
+import { FolderKanban, Search, Calendar, ArrowRight } from 'lucide-react'
 
 const statusColors = {
   pending: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
@@ -61,6 +61,12 @@ export default async function AdminProjectsPage() {
     `)
     .order('created_at', { ascending: false })
 
+  const { data: clients } = await supabase
+    .from('users')
+    .select('id, name, email, company')
+    .eq('role', 'client')
+    .order('name', { ascending: true })
+
   const totalProjects = projects?.length || 0
   const activeProjects = projects?.filter((p) =>
     ['pre_production', 'shooting', 'editing', 'review'].includes(p.status)
@@ -77,10 +83,7 @@ export default async function AdminProjectsPage() {
               Manage all client projects and deliverables
             </p>
           </div>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            New Project
-          </Button>
+          <ProjectForm clients={clients || []} />
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -164,10 +167,7 @@ export default async function AdminProjectsPage() {
                 <p className="text-center max-w-sm mb-6">
                   Create your first project to get started.
                 </p>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Project
-                </Button>
+                <ProjectForm clients={clients || []} />
               </div>
             ) : (
               <div className="space-y-4">
@@ -178,7 +178,7 @@ export default async function AdminProjectsPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
-                              {project.title}
+                              {project.name}
                             </h3>
                             <Badge
                               variant="outline"
@@ -195,25 +195,19 @@ export default async function AdminProjectsPage() {
                         <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
                       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                        {project.shoot_date && (
+                        {project.deadline && (
                           <div className="flex items-center gap-2">
                             <Calendar className="h-4 w-4" />
-                            {new Date(project.shoot_date).toLocaleDateString('en-US', {
+                            {new Date(project.deadline).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
                               year: 'numeric',
                             })}
                           </div>
                         )}
-                        {project.budget && (
-                          <div className="flex items-center gap-2">
-                            <DollarSign className="h-4 w-4" />
-                            ${project.budget.toLocaleString()}
-                          </div>
-                        )}
-                        {project.location && (
+                        {project.project_type && (
                           <div className="text-sm">
-                            {project.location}
+                            Type: {project.project_type}
                           </div>
                         )}
                       </div>

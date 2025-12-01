@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { uploadFile, getSignedUrl, deleteFile as deleteStorageFile } from '@/lib/supabase/storage'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { sendNewFileEmail } from '@/lib/email/send'
 
 // Validation schema
 const fileUploadSchema = z.object({
@@ -108,6 +109,30 @@ export async function uploadProjectFile(
         message: `A new file "${validatedData.file_name}" has been uploaded`,
         link: `/projects/${validatedData.project_id}`,
       })
+
+      // Get project and recipient info for email
+      const { data: projectData } = await supabase
+        .from('projects')
+        .select('name')
+        .eq('id', validatedData.project_id)
+        .single()
+
+      const { data: recipient } = await supabase
+        .from('users')
+        .select('name, email')
+        .eq('id', recipientId)
+        .single()
+
+      if (projectData && recipient) {
+        await sendNewFileEmail(
+          recipient.email,
+          recipient.name,
+          validatedData.project_id,
+          projectData.name,
+          validatedData.file_name,
+          validatedData.is_final || false
+        )
+      }
     }
 
     // Revalidate

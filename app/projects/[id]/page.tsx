@@ -8,14 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MessageForm } from '@/components/forms/MessageForm'
+import { DownloadFileButton } from '@/components/DownloadFileButton'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   ArrowLeft,
   Calendar,
-  DollarSign,
   FileText,
   MessageSquare,
-  Download,
-  MapPin,
 } from 'lucide-react'
 
 const statusColors = {
@@ -91,7 +90,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold tracking-tight">{project.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
             <p className="text-muted-foreground">Project details and deliverables</p>
           </div>
           <Badge
@@ -105,13 +104,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="border-border/50 bg-card/50 backdrop-blur">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Shoot Date</CardTitle>
+              <CardTitle className="text-sm font-medium">Deadline</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {project.shoot_date
-                  ? new Date(project.shoot_date).toLocaleDateString('en-US', {
+                {project.deadline
+                  ? new Date(project.deadline).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',
@@ -123,12 +122,12 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
           <Card className="border-border/50 bg-card/50 backdrop-blur">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Budget</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Project Type</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${project.budget ? project.budget.toLocaleString() : '0'}
+                {project.project_type || 'N/A'}
               </div>
             </CardContent>
           </Card>
@@ -162,12 +161,12 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </p>
                 <Separator />
                 <div className="grid gap-4 md:grid-cols-2">
-                  {project.location && (
+                  {project.project_type && (
                     <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <FileText className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm font-medium">Location</p>
-                        <p className="text-sm text-muted-foreground">{project.location}</p>
+                        <p className="text-sm font-medium">Project Type</p>
+                        <p className="text-sm text-muted-foreground">{project.project_type}</p>
                       </div>
                     </div>
                   )}
@@ -208,18 +207,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                         key={file.id}
                         className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:bg-accent transition-colors"
                       >
-                        <div className="flex items-center gap-3">
-                          <FileText className="h-5 w-5 text-muted-foreground" />
-                          <div>
-                            <p className="font-medium">{file.file_name}</p>
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium truncate">{file.file_name}</p>
+                              {file.is_final && (
+                                <span className="inline-flex items-center rounded-full bg-green-500/10 px-2 py-1 text-xs font-medium text-green-500 ring-1 ring-inset ring-green-500/20">
+                                  Final
+                                </span>
+                              )}
+                            </div>
                             <p className="text-xs text-muted-foreground">
                               {file.file_type} • {file.file_size ? `${(file.file_size / 1024 / 1024).toFixed(2)} MB` : 'Unknown size'}
+                              {file.version && ` • v${file.version}`}
                             </p>
+                            {file.notes && (
+                              <p className="text-xs text-muted-foreground mt-1">{file.notes}</p>
+                            )}
                           </div>
                         </div>
-                        <Button size="sm" variant="ghost">
-                          <Download className="h-4 w-4" />
-                        </Button>
+                        <DownloadFileButton fileId={file.id} fileName={file.file_name} />
                       </div>
                     ))}
                   </div>
@@ -242,19 +250,42 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {messages.map((message) => (
-                      <div key={message.id} className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium">
-                            {message.sender_id === user.id ? 'You' : 'Duke Studios'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(message.created_at).toLocaleDateString()}
-                          </p>
+                    {messages.map((message) => {
+                      const isOwn = message.sender_id === user.id
+                      return (
+                        <div key={message.id} className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''}`}>
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                              {isOwn ? profile.name.charAt(0) : 'DS'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className={`flex-1 space-y-1 ${isOwn ? 'items-end' : ''}`}>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium">
+                                {isOwn ? 'You' : 'Duke Studios'}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(message.created_at).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </p>
+                            </div>
+                            <div
+                              className={`rounded-lg p-3 max-w-md ${
+                                isOwn
+                                  ? 'bg-primary/10 border border-primary/20'
+                                  : 'bg-muted border border-border'
+                              }`}
+                            >
+                              <p className="text-sm">{message.body}</p>
+                            </div>
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground">{message.body}</p>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )}
 

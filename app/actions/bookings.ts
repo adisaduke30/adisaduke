@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { sendBookingConfirmedEmail, sendBookingDeclinedEmail } from '@/lib/email/send'
 
 // Validation schemas
 const bookingSchema = z.object({
@@ -105,8 +106,49 @@ export async function updateBookingStatus(
       return { success: false, error: 'Failed to update booking' }
     }
 
+    // Get client info for email
+    const { data: client } = await supabase
+      .from('users')
+      .select('name, email')
+      .eq('id', booking.client_id)
+      .single()
+
     // Create notification for client
     await createBookingStatusNotification(booking.id, booking.client_id, status)
+
+    // Send email notification
+    if (client) {
+      const formattedDate = new Date(booking.desired_date).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+      const formattedTime = booking.desired_date ? new Date(booking.desired_date).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+      }) : 'TBD'
+
+      if (status === 'approved') {
+        await sendBookingConfirmedEmail(
+          client.email,
+          client.name,
+          booking.id,
+          formattedDate,
+          formattedTime,
+          booking.project_type || 'Video Production'
+        )
+      } else if (status === 'declined') {
+        await sendBookingDeclinedEmail(
+          client.email,
+          client.name,
+          formattedDate,
+          formattedTime,
+          booking.project_type || 'Video Production',
+          adminNotes
+        )
+      }
+    }
 
     // Revalidate
     revalidatePath('/admin/bookings')

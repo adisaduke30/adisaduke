@@ -98,7 +98,7 @@ export default async function ProjectsPage() {
                     <div className="flex items-start justify-between">
                       <div className="space-y-1 flex-1">
                         <CardTitle className="group-hover:text-primary transition-colors">
-                          {project.title}
+                          {project.name}
                         </CardTitle>
                         <CardDescription className="line-clamp-2">
                           {project.description || 'No description provided'}
@@ -115,19 +115,19 @@ export default async function ProjectsPage() {
                       >
                         {statusLabels[project.status as keyof typeof statusLabels]}
                       </Badge>
-                      {project.shoot_date && (
+                      {project.deadline && (
                         <div className="flex items-center text-sm text-muted-foreground">
                           <Calendar className="mr-2 h-4 w-4" />
-                          {new Date(project.shoot_date).toLocaleDateString('en-US', {
+                          {new Date(project.deadline).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
                           })}
                         </div>
                       )}
-                      {project.budget && (
+                      {project.project_type && (
                         <div className="text-sm text-muted-foreground">
-                          Budget: ${project.budget.toLocaleString()}
+                          Type: {project.project_type}
                         </div>
                       )}
                     </div>

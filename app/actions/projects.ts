@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { sendProjectStatusEmail } from '@/lib/email/send'
 
 // Validation schemas
 const projectSchema = z.object({
@@ -187,7 +188,7 @@ export async function updateProjectStatus(
     // Get project for client notification
     const { data: project } = await supabase
       .from('projects')
-      .select('client_id, name')
+      .select('client_id, name, status')
       .eq('id', projectId)
       .single()
 
@@ -228,6 +229,27 @@ export async function updateProjectStatus(
         message: `${project.name} ${statusMessages[status]}`,
         link: `/projects/${projectId}`,
       })
+
+      // Get client info and send email
+      const { data: client } = await supabase
+        .from('users')
+        .select('name, email')
+        .eq('id', project.client_id)
+        .single()
+
+      if (client) {
+        const oldStatusLabel = project.status.replace(/_/g, ' ')
+        const newStatusLabel = status.replace(/_/g, ' ')
+
+        await sendProjectStatusEmail(
+          client.email,
+          client.name,
+          projectId,
+          project.name,
+          oldStatusLabel.charAt(0).toUpperCase() + oldStatusLabel.slice(1),
+          newStatusLabel.charAt(0).toUpperCase() + newStatusLabel.slice(1)
+        )
+      }
     }
 
     // Revalidate

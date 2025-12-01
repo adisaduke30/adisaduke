@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardLayout } from '@/components/layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { FileText, DollarSign, Calendar, Download, ExternalLink } from 'lucide-react'
+import { FileText, DollarSign, Calendar, Download, ExternalLink, ChevronRight } from 'lucide-react'
 
 const statusColors = {
   draft: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
@@ -44,18 +45,27 @@ export default async function InvoicesPage() {
     redirect('/admin/invoices')
   }
 
+  // Get invoices for this client's projects
+  const { data: clientProjects } = await supabase
+    .from('projects')
+    .select('id')
+    .eq('client_id', user.id)
+
+  const projectIds = clientProjects?.map(p => p.id) || []
+
   const { data: invoices } = await supabase
     .from('invoices')
     .select(`
       *,
-      projects(title)
+      projects(name)
     `)
-    .eq('client_id', user.id)
+    .in('project_id', projectIds)
     .order('created_at', { ascending: false })
 
-  const totalPaid = invoices?.filter((inv) => inv.status === 'paid').reduce((sum, inv) => sum + inv.amount, 0) || 0
-  const totalPending = invoices?.filter((inv) => inv.status === 'sent').reduce((sum, inv) => sum + inv.amount, 0) || 0
-  const totalOverdue = invoices?.filter((inv) => inv.status === 'overdue').reduce((sum, inv) => sum + inv.amount, 0) || 0
+  // Amounts are stored in cents, convert to dollars for display
+  const totalPaid = invoices?.filter((inv) => inv.status === 'paid').reduce((sum, inv) => sum + (inv.amount / 100), 0) || 0
+  const totalPending = invoices?.filter((inv) => inv.status === 'sent').reduce((sum, inv) => sum + (inv.amount / 100), 0) || 0
+  const totalOverdue = invoices?.filter((inv) => inv.status === 'overdue').reduce((sum, inv) => sum + (inv.amount / 100), 0) || 0
 
   return (
     <DashboardLayout user={profile}>
@@ -125,9 +135,10 @@ export default async function InvoicesPage() {
             ) : (
               <div className="space-y-4">
                 {invoices.map((invoice) => (
-                  <div
+                  <Link
                     key={invoice.id}
-                    className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors"
+                    href={`/invoices/${invoice.id}`}
+                    className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors group"
                   >
                     <div className="flex items-center gap-4 flex-1">
                       <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -144,33 +155,26 @@ export default async function InvoicesPage() {
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {invoice.projects?.title || 'Unknown Project'}
+                          {invoice.projects?.name || 'Unknown Project'}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="font-bold text-lg">${invoice.amount.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Due: {new Date(invoice.due_date).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        {invoice.status === 'sent' && (
-                          <Button size="sm">
-                            Pay Now
-                          </Button>
+                        <p className="font-bold text-lg">${(invoice.amount / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                        {invoice.due_date && (
+                          <p className="text-xs text-muted-foreground">
+                            Due: {new Date(invoice.due_date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            })}
+                          </p>
                         )}
-                        <Button size="sm" variant="outline">
-                          <Download className="h-4 w-4" />
-                        </Button>
                       </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

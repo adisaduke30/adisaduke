@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --use-npm)",
+      "Bash(npm install)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh auth:*)",
+      "Bash(git remote:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh repo:*)",
+      "Bash(git config:*)",
+      "Read(//c/Users/Luis/Documents/Disla Dynasty/Zero Pulse LLC/-ent/Zorath LLC -gaming/**)",
+      "WebFetch(domain:www.adisaduke.com)",
+      "Bash(npx vercel env add NEXT_PUBLIC_SUPABASE_URL production)",
+      "Bash(npm run build:*)",
+      "Bash(npx shadcn@latest init)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

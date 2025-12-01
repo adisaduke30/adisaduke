@@ -1,0 +1,242 @@
+{
+  "site": "https://www.adisaduke.com",
+  "extractedDate": "2025-12-01",
+  "purpose": "Content migration to Duke Studios platform",
+  "branding": {
+    "typography": {
+      "primary": "Karla",
+      "source": "Google Fonts"
+    },
+    "colorPalette": {
+      "background": "#F5F2ED",
+      "text": {
+        "primary": "#151515",
+        "secondary": "#555555"
+      },
+      "accent": "#222222"
+    },
+    "visualStyle": {
+      "layout": "Minimalist portfolio",
+      "presentation": "Vertical gallery",
+      "videoStyle": "Preview overlays with play functionality"
+    }
+  },
+  "professionalInfo": {
+    "name": "Adisa Duke",
+    "roles": [
+      "Director of Photography (primary)",
+      "Colorist",
+      "Editor",
+      "Camera Operator"
+    ],
+    "collaborators": [
+      "Networkgray",
+      "Palette Group",
+      "House of Malcolm",
+      "Matte Projects"
+    ],
+    "social": {
+      "instagram": "https://instagram.com/adisaduke"
+    }
+  },
+  "portfolio": {
+    "brandedContent": [
+      {
+        "title": "HP Sprocket 3x4",
+        "vimeoId": "727757228",
+        "url": "https://vimeo.com/727757228",
+        "role": "DP",
+        "category": "branded",
+        "client": "HP"
+      },
+      {
+        "title": "Puma Suede Classics: Men's",
+        "vimeoId": "683936434",
+        "url": "https://vimeo.com/683936434",
+        "role": "DP",
+        "company": "Palette Group",
+        "category": "branded",
+        "client": "Puma"
+      },
+      {
+        "title": "Puma Suede Classics: Unisex",
+        "vimeoId": "683938274",
+        "url": "https://vimeo.com/683938274",
+        "role": "DP",
+        "company": "Palette Group",
+        "category": "branded",
+        "client": "Puma"
+      },
+      {
+        "title": "Puma Suede Classics: Group",
+        "vimeoId": "703279064",
+        "url": "https://vimeo.com/703279064",
+        "role": "DP",
+        "company": "Palette Group",
+        "category": "branded",
+        "client": "Puma"
+      },
+      {
+        "title": "Golden Grooming",
+        "vimeoId": "342470080",
+        "url": "https://vimeo.com/342470080",
+        "role": "DP/Colorist",
+        "company": "House of Malcolm",
+        "category": "branded"
+      },
+      {
+        "title": "Nike Black History Month Recap 2020",
+        "vimeoId": "406260664",
+        "url": "https://vimeo.com/406260664",
+        "role": "DP/Editor",
+        "category": "branded",
+        "client": "Nike"
+      },
+      {
+        "title": "Nike Black History Month Day in the Life",
+        "vimeoId": "410466618",
+        "url": "https://vimeo.com/410466618",
+        "role": "DP/Editor",
+        "category": "branded",
+        "client": "Nike"
+      },
+      {
+        "title": "Nike Air Max 2090",
+        "vimeoId": "402709883",
+        "url": "https://vimeo.com/402709883",
+        "role": "DP/Editor",
+        "category": "branded",
+        "client": "Nike"
+      },
+      {
+        "title": "College Athlete Advocacy Initiative",
+        "vimeoId": "703284936",
+        "url": "https://vimeo.com/703284936",
+        "role": "DP",
+        "category": "branded"
+      },
+      {
+        "title": "Kreyól Essence",
+        "vimeoId": "703284803",
+        "url": "https://vimeo.com/703284803",
+        "role": "DP",
+        "company": "House of Malcolm",
+        "category": "branded"
+      },
+      {
+        "title": "BABEL & The William Vale",
+        "vimeoId": "233230503",
+        "url": "https://vimeo.com/233230503",
+        "role": "DP",
+        "director": "Andy Putnam",
+        "category": "branded"
+      },
+      {
+        "title": "Bandier Collection 2",
+        "vimeoId": null,
+        "url": null,
+        "role": "Camera Operator",
+        "company": "Matte Projects",
+        "category": "branded",
+        "note": "Video URL not provided on original site"
+      }
+    ],
+    "editorial": [
+      {
+        "title": "Semilla Nueva: Who We Are",
+        "vimeoId": "234754434",
+        "url": "https://vimeo.com/234754434",
+        "role": "Director/DP/Editor",
+        "category": "editorial"
+      },
+      {
+        "title": "DIOP",
+        "vimeoId": "294658793",
+        "url": "https://vimeo.com/294658793",
+        "role": "DP/Editor",
+        "category": "editorial",
+        "relatedLink": "https://weardiop.com"
+      },
+      {
+        "title": "Vimeo Stories in Place",
+        "vimeoId": "515302320",
+        "url": "https://vimeo.com/515302320",
+        "role": "Editor",
+        "category": "editorial",
+        "client": "Vimeo"
+      },
+      {
+        "title": "YouTube Project",
+        "youtubeId": "kH2cMs28pBY",
+        "url": "https://www.youtube.com/watch?v=kH2cMs28pBY",
+        "category": "editorial",
+        "note": "YouTube hosted video"
+      }
+    ]
+  },
+  "siteNavigation": {
+    "pages": [
+      {
+        "name": "Home",
+        "path": "/"
+      },
+      {
+        "name": "Reel",
+        "path": "/reel"
+      },
+      {
+        "name": "Branded",
+        "path": "/film"
+      },
+      {
+        "name": "Editorial",
+        "path": "/edit"
+      },
+      {
+        "name": "Shorts",
+        "path": "/shorts"
+      },
+      {
+        "name": "Contact",
+        "path": "/contact"
+      }
+    ]
+  },
+  "technicalDetails": {
+    "currentPlatform": "Format.com",
+    "videoHosting": {
+      "primary": "Vimeo",
+      "secondary": "YouTube"
+    },
+    "vimeoSettings": {
+      "brandedPlayer": true,
+      "showByline": false,
+      "showTitle": false,
+      "color": "white"
+    },
+    "lazyLoading": "lazySizesConfig"
+  },
+  "migrationPlan": {
+    "portfolioProjects": 20,
+    "brandedContentVideos": 12,
+    "editorialVideos": 4,
+    "totalVideos": 16,
+    "missingVideoUrls": 1,
+    "primaryClients": [
+      "Nike",
+      "Puma",
+      "HP",
+      "Vimeo"
+    ]
+  },
+  "copyright": "Copyright © 2024 Adisa Duke, All Rights Reserved",
+  "notes": [
+    "All videos currently embedded from Vimeo with custom branding",
+    "Minimalist design aesthetic should be preserved in new platform",
+    "Portfolio showcases high-profile clients (Nike, Puma, HP)",
+    "Strong focus on commercial/branded content work",
+    "Clean, professional presentation with no distractions",
+    "Karla font creates modern, approachable feel",
+    "Neutral color palette (#F5F2ED background) creates gallery-like experience"
+  ]
+}

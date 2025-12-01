@@ -2,10 +2,10 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardLayout } from '@/components/layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
+import { BookingActions } from '@/components/admin/BookingActions'
 import { Calendar, DollarSign, MapPin, Check, X, Clock } from 'lucide-react'
 
 const statusColors = {
@@ -140,7 +140,7 @@ export default async function AdminBookingsPage() {
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <CardTitle className="mb-1">{booking.project_title}</CardTitle>
+                                    <CardTitle className="mb-1">{booking.project_type || 'Project Request'}</CardTitle>
                                     <CardDescription>
                                       {booking.users?.name}
                                       {booking.users?.company && ` from ${booking.users.company}`}
@@ -156,15 +156,15 @@ export default async function AdminBookingsPage() {
                               </div>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                              <p className="text-muted-foreground">{booking.description}</p>
+                              <p className="text-muted-foreground">{booking.message}</p>
                               <Separator />
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {booking.requested_date && (
+                                {booking.desired_date && (
                                   <div>
                                     <p className="text-xs text-muted-foreground mb-1">Requested Date</p>
                                     <div className="flex items-center gap-2 text-sm">
                                       <Calendar className="h-4 w-4 text-muted-foreground" />
-                                      {new Date(booking.requested_date).toLocaleDateString('en-US', {
+                                      {new Date(booking.desired_date).toLocaleDateString('en-US', {
                                         month: 'short',
                                         day: 'numeric',
                                         year: 'numeric',
@@ -172,12 +172,12 @@ export default async function AdminBookingsPage() {
                                     </div>
                                   </div>
                                 )}
-                                {booking.budget && (
+                                {booking.budget_range && (
                                   <div>
                                     <p className="text-xs text-muted-foreground mb-1">Budget</p>
                                     <div className="flex items-center gap-2 text-sm font-medium">
                                       <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                      ${booking.budget.toLocaleString()}
+                                      {booking.budget_range}
                                     </div>
                                   </div>
                                 )}
@@ -202,16 +202,7 @@ export default async function AdminBookingsPage() {
                                 </div>
                               </div>
                               <Separator />
-                              <div className="flex gap-2">
-                                <Button className="flex-1">
-                                  <Check className="mr-2 h-4 w-4" />
-                                  Approve Booking
-                                </Button>
-                                <Button variant="outline" className="flex-1">
-                                  <X className="mr-2 h-4 w-4" />
-                                  Decline
-                                </Button>
-                              </div>
+                              <BookingActions bookingId={booking.id} />
                             </CardContent>
                           </Card>
                         )
@@ -247,7 +238,7 @@ export default async function AdminBookingsPage() {
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <CardTitle className="text-base">{booking.project_title}</CardTitle>
+                                    <CardTitle className="text-base">{booking.project_type || 'Project Request'}</CardTitle>
                                     <CardDescription className="text-sm">
                                       {booking.users?.name}
                                     </CardDescription>

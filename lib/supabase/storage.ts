@@ -3,24 +3,29 @@ import { createClient } from './client'
 export async function uploadFile(
   bucket: string,
   path: string,
-  file: File
+  file: string | Uint8Array | ArrayBuffer | Blob | Buffer | File,
+  contentType?: string
 ) {
   const supabase = createClient()
 
+  const options: any = {
+    cacheControl: '3600',
+    upsert: false,
+  }
+
+  if (contentType) {
+    options.contentType = contentType
+  }
+
   const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(path, file, {
-      cacheControl: '3600',
-      upsert: false,
-    })
+    .upload(path, file, options)
 
-  if (error) throw error
+  if (error) {
+    return { success: false, error: error.message }
+  }
 
-  const { data: { publicUrl } } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(data.path)
-
-  return { path: data.path, url: publicUrl }
+  return { success: true, path: data.path }
 }
 
 export async function getSignedUrl(
@@ -34,8 +39,11 @@ export async function getSignedUrl(
     .from(bucket)
     .createSignedUrl(path, expiresIn)
 
-  if (error) throw error
-  return data.signedUrl
+  if (error) {
+    return { success: false, error: error.message }
+  }
+
+  return { success: true, url: data.signedUrl }
 }
 
 export async function deleteFile(bucket: string, path: string) {
@@ -45,7 +53,11 @@ export async function deleteFile(bucket: string, path: string) {
     .from(bucket)
     .remove([path])
 
-  if (error) throw error
+  if (error) {
+    return { success: false, error: error.message }
+  }
+
+  return { success: true }
 }
 
 export async function listFiles(bucket: string, folder: string = '') {

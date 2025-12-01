@@ -22,7 +22,8 @@
       "Bash(npx shadcn@latest init)",
       "Bash(npm install:*)",
       "Bash(npx shadcn@latest add:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git branch:*)"
     ],
     "deny": [],
     "ask": []

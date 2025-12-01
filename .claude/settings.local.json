@@ -24,7 +24,10 @@
       "Bash(npx shadcn@latest add:*)",
       "Bash(rm:*)",
       "Bash(git branch:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(git show:*)",
+      "Bash(awk:*)",
+      "Bash(git fsck:*)"
     ],
     "deny": [],
     "ask": []

@@ -3,11 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { DashboardLayout } from '@/components/layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Calendar, Clock, DollarSign, Plus } from 'lucide-react'
+import { BookingForm } from '@/components/forms/BookingForm'
+import { Calendar, Clock, DollarSign } from 'lucide-react'
 
 const statusColors = {
   pending: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
@@ -86,7 +83,7 @@ export default async function BookingsPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold">{booking.project_title}</h3>
+                            <h3 className="font-semibold">{booking.project_type || 'Project Request'}</h3>
                             <Badge
                               variant="outline"
                               className={statusColors[booking.status as keyof typeof statusColors]}
@@ -95,25 +92,25 @@ export default async function BookingsPage() {
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground line-clamp-2">
-                            {booking.description}
+                            {booking.message}
                           </p>
                         </div>
                       </div>
                       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                        {booking.requested_date && (
+                        {booking.desired_date && (
                           <div className="flex items-center gap-2">
                             <Calendar className="h-4 w-4" />
-                            {new Date(booking.requested_date).toLocaleDateString('en-US', {
+                            {new Date(booking.desired_date).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
                               year: 'numeric',
                             })}
                           </div>
                         )}
-                        {booking.budget && (
+                        {booking.budget_range && (
                           <div className="flex items-center gap-2">
                             <DollarSign className="h-4 w-4" />
-                            ${booking.budget.toLocaleString()}
+                            {booking.budget_range}
                           </div>
                         )}
                         <div className="flex items-center gap-2">
@@ -136,53 +133,8 @@ export default async function BookingsPage() {
               <CardTitle>New Booking Request</CardTitle>
               <CardDescription>Request a new project with Duke Studios</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Project Title</Label>
-                <Input
-                  id="title"
-                  placeholder="e.g., Nike Air Max Commercial"
-                  className="bg-background/50 border-border/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Describe your project needs..."
-                  rows={4}
-                  className="bg-background/50 border-border/50 resize-none"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date">Preferred Shoot Date</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  className="bg-background/50 border-border/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="budget">Budget</Label>
-                <Input
-                  id="budget"
-                  type="number"
-                  placeholder="15000"
-                  className="bg-background/50 border-border/50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  placeholder="e.g., Los Angeles, CA"
-                  className="bg-background/50 border-border/50"
-                />
-              </div>
-              <Button className="w-full">
-                <Plus className="mr-2 h-4 w-4" />
-                Submit Booking Request
-              </Button>
+            <CardContent>
+              <BookingForm userEmail={profile.email} userName={profile.name} />
             </CardContent>
           </Card>
         </div>

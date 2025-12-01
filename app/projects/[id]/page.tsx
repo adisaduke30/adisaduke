@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { MessageForm } from '@/components/forms/MessageForm'
 import {
   ArrowLeft,
   Calendar,
@@ -229,19 +230,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
           <TabsContent value="messages" className="space-y-4">
             <Card className="border-border/50 bg-card/50 backdrop-blur">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>Project Messages</CardTitle>
-                  <CardDescription>Communication with Duke Studios</CardDescription>
-                </div>
-                <Link href="/messages">
-                  <Button variant="outline" size="sm">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    View All
-                  </Button>
-                </Link>
+              <CardHeader>
+                <CardTitle>Project Messages</CardTitle>
+                <CardDescription>Communication with Duke Studios</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
                 {!messages || messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                     <MessageSquare className="h-12 w-12 mb-4" />
@@ -259,11 +252,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                             {new Date(message.created_at).toLocaleDateString()}
                           </p>
                         </div>
-                        <p className="text-sm text-muted-foreground">{message.message}</p>
+                        <p className="text-sm text-muted-foreground">{message.body}</p>
                       </div>
                     ))}
                   </div>
                 )}
+
+                <Separator />
+
+                <div>
+                  <h4 className="text-sm font-medium mb-4">Send a Message</h4>
+                  <MessageForm projectId={id} />
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

@@ -2,11 +2,9 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardLayout } from '@/components/layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { MessageSquare, Send } from 'lucide-react'
+import { ProjectMessageForm } from '@/components/forms/ProjectMessageForm'
+import { MessageSquare } from 'lucide-react'
 
 export default async function MessagesPage() {
   const supabase = await createClient()
@@ -125,7 +123,7 @@ export default async function MessagesPage() {
                                         : 'bg-muted border border-border'
                                     }`}
                                   >
-                                    <p className="text-sm">{message.message}</p>
+                                    <p className="text-sm">{message.body}</p>
                                   </div>
                                 </div>
                               </div>
@@ -145,34 +143,8 @@ export default async function MessagesPage() {
               <CardTitle>Send Message</CardTitle>
               <CardDescription>Message Duke Studios</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Project</label>
-                <Select>
-                  <SelectTrigger className="bg-background/50 border-border/50">
-                    <SelectValue placeholder="Select a project" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {projects?.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Message</label>
-                <Textarea
-                  placeholder="Type your message here..."
-                  rows={6}
-                  className="bg-background/50 border-border/50 resize-none"
-                />
-              </div>
-              <Button className="w-full">
-                <Send className="mr-2 h-4 w-4" />
-                Send Message
-              </Button>
+            <CardContent>
+              <ProjectMessageForm projects={projects || []} />
             </CardContent>
           </Card>
         </div>

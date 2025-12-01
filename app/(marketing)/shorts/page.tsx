@@ -66,6 +66,7 @@ export default function ShortsPage() {
             description={`${video.role} for ${video.client}. Short form ${video.category} video content for social media platforms.`}
             thumbnailUrl={thumbnailUrl}
             embedUrl={embedUrl}
+            uploadDate="2024-01-01"
             creator={{
               name: "Adisa Duke",
               jobTitle: "Director of Photography & Cinematographer",

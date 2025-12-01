@@ -59,6 +59,7 @@ export default function EditorialPage() {
             description={`${video.role || 'Cinematography'} for ${'company' in video ? video.company : 'editorial project'}. ${video.category} documentary and editorial video production.`}
             thumbnailUrl={thumbnailUrl}
             embedUrl={embedUrl}
+            uploadDate="2024-01-01"
             creator={{
               name: "Adisa Duke",
               jobTitle: "Director of Photography & Cinematographer",

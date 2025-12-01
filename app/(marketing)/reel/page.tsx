@@ -67,6 +67,7 @@ export default function ReelPage() {
             description={`${video.role} for ${'client' in video ? video.client : ('company' in video ? video.company : 'project')}. Featured in cinematography reel showcasing ${video.category} video production.`}
             thumbnailUrl={thumbnailUrl}
             embedUrl={embedUrl}
+            uploadDate="2024-01-01"
             creator={{
               name: "Adisa Duke",
               jobTitle: "Director of Photography & Cinematographer",

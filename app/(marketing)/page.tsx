@@ -96,6 +96,7 @@ export default function HomePage() {
             description={`${video.role || 'Cinematography'} for ${'client' in video ? video.client : ('company' in video ? video.company : 'client')}. ${video.category} video production.`}
             thumbnailUrl={thumbnailUrl}
             embedUrl={embedUrl}
+            uploadDate="2024-01-01"
             creator={{
               name: "Adisa Duke",
               jobTitle: "Director of Photography & Cinematographer",

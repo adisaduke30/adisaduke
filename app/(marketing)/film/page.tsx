@@ -64,6 +64,7 @@ export default function BrandedContentPage() {
             description={`${video.role} for ${video.client}. Commercial ${video.category} video production.`}
             thumbnailUrl={thumbnailUrl}
             embedUrl={embedUrl}
+            uploadDate="2024-01-01"
             creator={{
               name: "Adisa Duke",
               jobTitle: "Director of Photography & Cinematographer",
